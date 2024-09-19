@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChartJs</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"
+      integrity="sha512-wUYbRPLV5zs6IqvWd88HIqZU/b8TBx+I8LEioQ/UC0t5EMCLApqhIAnUg7EsAzdbhhdgW07TqYDdH3QEXRcPOQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f5f5f5;
+      }
+      div {
+        text-align: center;
+      }
+      canvas {
+        border: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <canvas id="myChart" height="500px" width="700px"></canvas>
+    </div>
+    <script>
+      const ctx = document.getElementById("myChart");
+
+      const data = {
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+        datasets: [
+          {
+            label: "MyDataset",
+            data: [
+              65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40, 65, 59,
+              80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40,
+            ],
+            borderColor: "rgba(54, 162, 235, 1)",
+            backgroundColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1.5,
+          },
+        ],
+      };
+
+      const verticalHoverLine = {
+        id: "verticalHoverLine",
+        beforeDatasetsDraw(chart) {
+          const {
+            ctx,
+            chartArea: { top, bottom },
+          } = chart;
+
+          ctx.save();
+          ctx.lineWidth = 1;
+          chart.getDatasetMeta(0).data.forEach((dataPoint) => {
+            if (dataPoint.active) {
+              ctx.beginPath();
+              ctx.strokeStyle = "gray";
+              ctx.moveTo(dataPoint.x, top);
+              ctx.lineTo(dataPoint.x, bottom);
+              ctx.stroke();
+            }
+          });
+        },
+      };
+
+      const myChart = new Chart(ctx, {
+        type: "line",
+        data: data,
+        options: {
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              min: 0,
+              max: 200,
+            },
+          },
+          plugins: {
+            zoom: {
+              pan: {
+                enabled: true,
+                mode: "x",
+              },
+              zoom: {
+                enabled: true,
+                mode: "x",
+                drag: {
+                  enabled: true,
+                  backgroundColor: "#9797978f",
+                },
+              },
+            },
+          },
+        },
+        plugins: [verticalHoverLine],
+      });
+      ctx.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+        myChart.resetZoom();
+      });
+    </script>
+  </body>
+</html>

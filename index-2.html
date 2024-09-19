@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chart JS</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      .chartMenu {
+        width: 100vw;
+        height: 40px;
+        background: #1a1a1a;
+        color: rgba(54, 162, 235, 1);
+      }
+      .chartCard {
+        width: 100vw;
+        height: calc(100vh - 40px);
+        background: rgba(54, 162, 235, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chartBox {
+        width: 700px;
+        padding: 20px;
+        border-radius: 20px;
+        border: solid 3px rgba(54, 162, 235, 1);
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chartCard">
+      <div class="chartBox">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+      const data = {
+        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        datasets: [
+          {
+            label: "Car Sales",
+            data: [18, 12, 6, 9, 12, 3, 9],
+            backgroundColor: "rgba(54, 162, 235, 0.2)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1,
+          },
+          {
+            label: "Bike Sales",
+            data: [28, 11, 9, 4, 16, 6, 12],
+            backgroundColor: "rgba(0, 4, 0, 0.2)",
+            borderColor: "rgba(0, 26, 104, 1)",
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const config = {
+        type: "line",
+        data,
+        options: {
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+          plugins: {
+            tooltip: {
+              enabled: true,
+            },
+          },
+          // Custom draw on hover
+          onHover(event, chartElement) {
+            const chart = this.chart;
+            const ctx = chart.ctx;
+
+            // Clear previous vertical line
+            ctx.clearRect(0, 0, chart.width, chart.height);
+            chart.update();
+
+            if (chartElement.length) {
+              const index = chartElement[0].index;
+              const x = chart.scales.x.getPixelForValue(index);
+
+              // Draw the vertical line
+              ctx.save();
+              ctx.beginPath();
+              ctx.moveTo(x, 0);
+              ctx.lineTo(x, chart.height);
+              ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
+              ctx.lineWidth = 2;
+              ctx.stroke();
+              ctx.restore();
+            }
+          },
+        },
+      };
+
+      const myChart = new Chart(document.getElementById("myChart"), config);
+    </script>
+  </body>
+</html>
